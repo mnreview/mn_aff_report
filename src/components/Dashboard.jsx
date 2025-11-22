@@ -152,43 +152,64 @@ const Dashboard = ({ data, setData }) => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-12">
-            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white pb-32 pt-12 px-8 shadow-lg">
-                <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <div>
-                        <h1 className="text-4xl font-bold tracking-tight">Shopee Affiliate Dashboard</h1>
-                        <p className="text-orange-100 mt-2 text-lg">Track your performance and maximize your earnings</p>
+        <div className="min-h-screen bg-transparent pb-12">
+            {/* Navbar / Header */}
+            <div className="glass-panel sticky top-0 z-50 border-b border-white/5">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20">
+                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-white tracking-tight">
+                                Shopee <span className="text-gradient-gold">Affiliate</span>
+                            </h1>
+                            <p className="text-slate-400 text-xs font-medium">Dashboard & Analytics</p>
+                        </div>
                     </div>
-                    <Link to="/report" className="bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-2.5 rounded-xl hover:bg-white/30 transition-all font-medium shadow-lg">
-                        View Detailed Report →
+                    <Link to="/report" className="group relative px-6 py-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 border border-white/10 transition-all duration-300 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <span className="relative flex items-center gap-2 text-sm font-medium text-slate-200 group-hover:text-white">
+                            View Detailed Report
+                            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </Link>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-8 -mt-24">
-                <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-xl mb-8 border border-white/20">
-                    <h2 className="text-lg font-semibold mb-4 text-slate-800 flex items-center gap-2">
-                        <span className="w-1 h-6 bg-orange-500 rounded-full"></span>
-                        API Credentials
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                {/* API Credentials Section */}
+                <div className="glass-card p-6 rounded-2xl mb-8">
+                    <h2 className="text-lg font-semibold mb-6 text-white flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 16l-1.536 4.442-1.536-4.442L4.257 9.257A6 6 0 0115 7z" />
+                            </svg>
+                        </div>
+                        API Configuration
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="group">
-                            <label className="block text-sm font-medium text-slate-600 mb-2">App ID</label>
+                            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">App ID</label>
                             <input
                                 type="text"
                                 value={appId}
                                 onChange={(e) => setAppId(e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all shadow-sm"
+                                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
                                 placeholder="Enter your App ID"
                             />
                         </div>
                         <div className="group">
-                            <label className="block text-sm font-medium text-slate-600 mb-2">Secret</label>
+                            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Secret Key</label>
                             <input
                                 type="password"
                                 value={secret}
                                 onChange={(e) => setSecret(e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all shadow-sm"
+                                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
                                 placeholder="Enter your Secret"
                             />
                         </div>
@@ -205,21 +226,23 @@ const Dashboard = ({ data, setData }) => {
 
                 {data.length > 0 && (
                     <>
-                        <button
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="mb-6 bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl hover:bg-slate-50 transition-all font-medium shadow-sm flex items-center gap-2"
-                        >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            {showFilters ? 'ซ่อนตัวกรอง' : 'แสดงตัวกรอง'}
-                            <svg className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
+                        <div className="flex justify-end mb-6">
+                            <button
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="glass-card px-5 py-2.5 rounded-xl text-slate-300 hover:text-white flex items-center gap-2 text-sm font-medium transition-all"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                </svg>
+                                {showFilters ? 'Hide Filters' : 'Show Filters'}
+                                <svg className={`w-3 h-3 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
 
                         {showFilters && (
-                            <div className="animate-fade-in">
+                            <div className="animate-fade-in mb-8">
                                 <DetailedReportFilters
                                     filters={filters}
                                     setFilters={setFilters}
@@ -232,8 +255,8 @@ const Dashboard = ({ data, setData }) => {
                 )}
 
                 {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg mb-8 shadow-sm flex items-center">
-                        <svg className="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-8 flex items-center backdrop-blur-sm">
+                        <svg className="w-6 h-6 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {error}
@@ -241,23 +264,26 @@ const Dashboard = ({ data, setData }) => {
                 )}
 
                 {loading ? (
-                    <div className="text-center py-20">
+                    <div className="text-center py-32">
                         <div className="relative inline-flex">
-                            <div className="w-16 h-16 bg-orange-500 rounded-full animate-ping opacity-75"></div>
-                            <div className="w-16 h-16 bg-orange-600 rounded-full absolute top-0 left-0 flex items-center justify-center shadow-lg">
+                            <div className="w-16 h-16 bg-indigo-500 rounded-full animate-ping opacity-20"></div>
+                            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full absolute top-0 left-0 flex items-center justify-center shadow-xl shadow-indigo-500/30">
                                 <svg className="w-8 h-8 text-white animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <p className="mt-6 text-slate-500 font-medium text-lg">กำลังดึงข้อมูล...</p>
+                        <p className="mt-6 text-slate-400 font-medium text-lg animate-pulse">Syncing data...</p>
                     </div>
                 ) : (
                     <div className="space-y-8 animate-fade-in">
                         {data.length > 0 && filteredData.length !== data.length && (
-                            <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-r-lg shadow-sm">
-                                แสดง {filteredData.length} จาก {data.length} รายการ
+                            <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 p-4 rounded-xl flex items-center justify-between">
+                                <span className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                                    Showing {filteredData.length} of {data.length} records
+                                </span>
                             </div>
                         )}
                         <SummaryCards data={filteredData} />
