@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PROXY_URL = 'http://localhost:3001/api/conversion-report';
+const PROXY_URL = '/api/conversion-report';
 
 export const fetchConversionReport = async (appId, secret, params) => {
   // Construct GraphQL query based on params
