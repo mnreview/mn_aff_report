@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Filters from './Filters';
 import SummaryCards from './SummaryCards';
@@ -17,6 +17,7 @@ const Dashboard = ({ data, setData }) => {
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
     const navigate = useNavigate();
+    const hasLoadedInitialData = useRef(false);
 
     const [filters, setFilters] = useState({
         subId: '',
@@ -60,6 +61,14 @@ const Dashboard = ({ data, setData }) => {
 
         initDashboard();
     }, [navigate]);
+
+    // Auto-load data on initial mount when all required values are ready
+    useEffect(() => {
+        if (appId && secret && startDate && endDate && !hasLoadedInitialData.current) {
+            hasLoadedInitialData.current = true;
+            handleSearch();
+        }
+    }, [appId, secret, startDate, endDate]);
 
     const handleSearch = async (overrideStart, overrideEnd) => {
         if (!appId || !secret) {
