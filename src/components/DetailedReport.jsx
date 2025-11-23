@@ -126,8 +126,8 @@ const DetailedReport = ({ data }) => {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.conversionId}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${row.conversionStatus === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                                                    row.conversionStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                        'bg-slate-100 text-slate-800'
+                                                row.conversionStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                                    'bg-slate-100 text-slate-800'
                                                 }`}>
                                                 {row.conversionStatus}
                                             </span>
@@ -144,9 +144,9 @@ const DetailedReport = ({ data }) => {
                                         </td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.item?.itemPrice || '-'}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.item?.qty || '-'}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-green-600">฿{row.item?.itemTotalCommission || row.totalCommission}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">฿{row.item?.itemSellerCommission || row.sellerCommission}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">฿{row.item?.itemShopeeCommissionCapped || row.shopeeCommissionCapped}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-green-600">{row.item?.itemTotalCommission || row.totalCommission}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.item?.itemSellerCommission || row.sellerCommission}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.item?.itemShopeeCommissionCapped || row.shopeeCommissionCapped}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.buyerType}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.device}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.utmContent || '-'}</td>

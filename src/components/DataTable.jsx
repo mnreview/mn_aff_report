@@ -55,7 +55,7 @@ const DataTable = ({ data }) => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">
-                                            ฿{item.totalCommission}
+                                            {item.totalCommission}
                                         </span>
                                     </td>
                                 </tr>

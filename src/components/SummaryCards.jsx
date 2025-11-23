@@ -18,7 +18,6 @@ const SummaryCards = ({ data }) => {
                     </div>
                     <p className="text-slate-300 text-sm font-medium mb-1 uppercase tracking-wider">Total Commission</p>
                     <h3 className="text-3xl font-bold text-white flex items-baseline gap-1">
-                        <span className="text-emerald-400">฿</span>
                         {totalCommission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </h3>
                 </div>

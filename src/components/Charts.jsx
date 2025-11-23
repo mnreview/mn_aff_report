@@ -53,7 +53,7 @@ const Charts = ({ data }) => {
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#cbd5e1', fontSize: 12 }}
-                            tickFormatter={(value) => `฿${value}`}
+                            tickFormatter={(value) => `${value}`}
                         />
                         <Tooltip
                             contentStyle={{

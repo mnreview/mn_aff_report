@@ -78,8 +78,8 @@ const TopLists = ({ data }) => {
             conversion.orders?.forEach(order => {
                 conversionOrders += 1;
                 order.items?.forEach(item => {
-                    conversionCommission += item.itemTotalCommission || 0;
-                    conversionItems += item.qty || 0;
+                    conversionCommission += parseFloat(item.itemTotalCommission) || 0;
+                    conversionItems += parseInt(item.qty) || 0;
                 });
             });
 
@@ -155,12 +155,12 @@ const TopLists = ({ data }) => {
                                         {item.channelType}
                                     </span>
                                     <span className="text-[10px] text-slate-400">
-                                        ฿{item.price} × {item.qty}
+                                        {item.price} × {item.qty}
                                     </span>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-lg font-bold text-emerald-400">฿{Number(item.commission || 0).toFixed(2)}</p>
+                                <p className="text-lg font-bold text-emerald-400">{Number(item.commission || 0).toFixed(2)}</p>
                             </div>
                         </div>
                     ))}
@@ -199,7 +199,7 @@ const TopLists = ({ data }) => {
                                         {item.channelType}
                                     </span>
                                     <span className="text-[10px] text-emerald-400 font-medium">
-                                        ฿{Number(item.commission || 0).toFixed(2)}
+                                        {Number(item.commission || 0).toFixed(2)}
                                     </span>
                                 </div>
                             </div>
@@ -238,7 +238,7 @@ const TopLists = ({ data }) => {
                                 <p className="text-xs text-slate-400">{item.orders} Orders • {item.items} Items</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-lg font-bold text-blue-400">฿{Number(item.commission || 0).toFixed(2)}</p>
+                                <p className="text-lg font-bold text-blue-400">{Number(item.commission || 0).toFixed(2)}</p>
                             </div>
                         </div>
                     ))}
@@ -268,7 +268,7 @@ const TopLists = ({ data }) => {
                                 <p className="font-medium text-slate-200 truncate text-sm" title={item.subId}>
                                     {item.subId}
                                 </p>
-                                <p className="text-xs text-slate-400">฿{Number(item.commission || 0).toFixed(2)} Commission</p>
+                                <p className="text-xs text-slate-400">{Number(item.commission || 0).toFixed(2)} Commission</p>
                             </div>
                             <div className="text-right">
                                 <p className="text-lg font-bold text-purple-400">{item.orders}</p>
