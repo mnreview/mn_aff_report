@@ -78,8 +78,8 @@ const DetailedReport = ({ data, appId, secret }) => {
             // Construct origin URL
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
 
-            // Generate short link
-            const shortLink = await generateShortLink(appId, secret, originUrl);
+            // Generate short link with SubID
+            const shortLink = await generateShortLink(appId, secret, originUrl, ["detail", "porto", "mng", "report"]);
 
             // Open in new tab
             window.open(shortLink, '_blank');
