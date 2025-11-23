@@ -46,25 +46,25 @@ const Charts = ({ data }) => {
                             dataKey="date"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#94a3b8', fontSize: 12 }}
+                            tick={{ fill: '#cbd5e1', fontSize: 12 }}
                             dy={10}
                         />
                         <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#94a3b8', fontSize: 12 }}
+                            tick={{ fill: '#cbd5e1', fontSize: 12 }}
                             tickFormatter={(value) => `฿${value}`}
                         />
                         <Tooltip
                             contentStyle={{
-                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                backgroundColor: 'rgba(2, 6, 23, 0.9)',
                                 borderRadius: '12px',
                                 border: '1px solid rgba(255,255,255,0.1)',
                                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-                                color: '#fff'
+                                color: '#f1f5f9'
                             }}
                             itemStyle={{ color: '#818cf8', fontWeight: '600' }}
-                            labelStyle={{ color: '#94a3b8' }}
+                            labelStyle={{ color: '#cbd5e1' }}
                         />
                         <Area
                             type="monotone"

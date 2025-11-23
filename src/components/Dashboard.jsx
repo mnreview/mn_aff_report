@@ -15,6 +15,7 @@ const Dashboard = ({ data, setData }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
+    const [showCredentials, setShowCredentials] = useState(false);
 
     const [filters, setFilters] = useState({
         subId: '',
@@ -184,36 +185,49 @@ const Dashboard = ({ data, setData }) => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
                 {/* API Credentials Section */}
                 <div className="glass-card p-6 rounded-2xl mb-8">
-                    <h2 className="text-lg font-semibold mb-6 text-white flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 16l-1.536 4.442-1.536-4.442L4.257 9.257A6 6 0 0115 7z" />
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold text-white flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 16l-1.536 4.442-1.536-4.442L4.257 9.257A6 6 0 0115 7z" />
+                                </svg>
+                            </div>
+                            API Configuration
+                        </h2>
+                        <button
+                            onClick={() => setShowCredentials(!showCredentials)}
+                            className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg"
+                        >
+                            <svg className={`w-5 h-5 transition-transform ${showCredentials ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
-                        </div>
-                        API Configuration
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="group">
-                            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">App ID</label>
-                            <input
-                                type="text"
-                                value={appId}
-                                onChange={(e) => setAppId(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
-                                placeholder="Enter your App ID"
-                            />
-                        </div>
-                        <div className="group">
-                            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Secret Key</label>
-                            <input
-                                type="password"
-                                value={secret}
-                                onChange={(e) => setSecret(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
-                                placeholder="Enter your Secret"
-                            />
-                        </div>
+                        </button>
                     </div>
+
+                    {showCredentials && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                            <div className="group">
+                                <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">App ID</label>
+                                <input
+                                    type="text"
+                                    value={appId}
+                                    onChange={(e) => setAppId(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
+                                    placeholder="Enter your App ID"
+                                />
+                            </div>
+                            <div className="group">
+                                <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">Secret Key</label>
+                                <input
+                                    type="password"
+                                    value={secret}
+                                    onChange={(e) => setSecret(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
+                                    placeholder="Enter your Secret"
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <Filters
