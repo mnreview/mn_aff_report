@@ -180,7 +180,7 @@ const Dashboard = ({ data, setData }) => {
             <div className="glass-panel sticky top-0 z-50 border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20">
+                        <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl shadow-lg shadow-orange-500/20">
                             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
@@ -245,8 +245,8 @@ const Dashboard = ({ data, setData }) => {
                 {loading ? (
                     <div className="text-center py-32">
                         <div className="relative inline-flex">
-                            <div className="w-16 h-16 bg-indigo-500 rounded-full animate-ping opacity-20"></div>
-                            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full absolute top-0 left-0 flex items-center justify-center shadow-xl shadow-indigo-500/30">
+                            <div className="w-16 h-16 bg-orange-500 rounded-full animate-ping opacity-20"></div>
+                            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full absolute top-0 left-0 flex items-center justify-center shadow-xl shadow-orange-500/30">
                                 <svg className="w-8 h-8 text-white animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -258,9 +258,9 @@ const Dashboard = ({ data, setData }) => {
                 ) : (
                     <div className="space-y-8 animate-fade-in">
                         {data.length > 0 && filteredData.length !== data.length && (
-                            <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 p-4 rounded-xl flex items-center justify-between">
+                            <div className="bg-orange-500/10 border border-orange-500/20 text-orange-300 p-4 rounded-xl flex items-center justify-between">
                                 <span className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                                    <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
                                     Showing {filteredData.length} of {data.length} records
                                 </span>
                             </div>
