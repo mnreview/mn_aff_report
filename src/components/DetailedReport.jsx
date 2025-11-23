@@ -89,6 +89,14 @@ const DetailedReport = ({ data, appId, secret }) => {
             window.open(shortLink, '_blank');
         } catch (error) {
             console.error("Failed to generate link:", error);
+
+            // Check if it's a rate limit error
+            if (error.response?.status === 429 ||
+                error.response?.data?.code === 10030 ||
+                error.message?.toLowerCase().includes('rate limit')) {
+                alert('⚠️ Rate Limit Exceeded!\n\nYou have hit Shopee\'s API limit of 2000 requests per hour.\nPlease wait for the counter to reset before generating more links.\n\nOpening product URL without affiliate tracking...');
+            }
+
             // Fallback to origin URL
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
             window.open(originUrl, '_blank');

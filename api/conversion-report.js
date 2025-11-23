@@ -60,9 +60,45 @@ export default async function handler(req, res) {
                 },
             }
         );
+
+        // Check for GraphQL errors in response
+        if (response.data && response.data.errors) {
+            const errors = response.data.errors;
+            const firstError = errors[0];
+
+            // Check for rate limit error (code 10030)
+            if (firstError.extensions?.code === 10030 ||
+                firstError.message?.toLowerCase().includes('rate limit') ||
+                firstError.message?.toLowerCase().includes('traffic limiting')) {
+
+                console.error('⚠️ Rate Limit Exceeded:', firstError.message);
+                return res.status(429).json({
+                    error: 'Rate limit exceeded',
+                    message: 'You have exceeded Shopee API rate limit of 2000 requests per hour',
+                    code: 10030,
+                    shopeeError: firstError,
+                    errors: errors
+                });
+            }
+        }
+
         res.json(response.data);
     } catch (error) {
         console.error('API Error:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: error.message, details: error.response ? error.response.data : null });
+
+        // Check if it's a rate limit error from HTTP status
+        if (error.response && error.response.status === 429) {
+            return res.status(429).json({
+                error: 'Rate limit exceeded',
+                message: 'You have exceeded Shopee API rate limit of 2000 requests per hour',
+                code: 10030,
+                details: error.response.data
+            });
+        }
+
+        res.status(500).json({
+            error: error.message,
+            details: error.response ? error.response.data : null
+        });
     }
 }
