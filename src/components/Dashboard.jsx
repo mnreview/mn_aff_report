@@ -43,16 +43,14 @@ const Dashboard = ({ data, setData }) => {
                     setSecret(config.app_secret);
                 }
 
-                // Set default dates (Last 7 days)
+                // Set default dates (Yesterday)
                 if (!startDate && !endDate) {
                     const today = new Date();
-                    const start = new Date(today);
-                    start.setDate(start.getDate() - 7);
-                    const end = new Date(today);
-                    end.setDate(end.getDate() - 1);
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
 
-                    setStartDate(start.toISOString().split('T')[0]);
-                    setEndDate(end.toISOString().split('T')[0]);
+                    setStartDate(yesterday.toISOString().split('T')[0]);
+                    setEndDate(yesterday.toISOString().split('T')[0]);
                 }
             } catch (err) {
                 console.error('Error initializing dashboard:', err);
