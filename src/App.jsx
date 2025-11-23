@@ -7,6 +7,8 @@ import Auth from './components/Auth';
 import ApiConfig from './components/ApiConfig';
 import Settings from './components/Settings';
 import Pricing from './components/Pricing';
+import LandingPage from './components/LandingPage';
+import About from './components/About';
 
 const ProtectedRoute = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -63,9 +65,15 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/setup-api" element={<ApiConfig />} />
-        <Route path="/" element={
+
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard
               data={data}
@@ -93,7 +101,6 @@ function App() {
             <Settings />
           </ProtectedRoute>
         } />
-        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </Router>
   );
