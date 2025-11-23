@@ -3,7 +3,7 @@ import React from 'react';
 const RateLimitIndicator = ({ status, onReset }) => {
     if (!status) return null;
 
-    const { used, remaining, total, percentage, approaching, exceeded, timeUntilReset } = status;
+    const { used, remaining, total, percentage, approaching, exceeded, timeUntilReset, source } = status;
 
     // Determine color scheme based on usage
     const getColorClasses = () => {
@@ -61,6 +61,15 @@ const RateLimitIndicator = ({ status, onReset }) => {
                         <h3 className={`font-semibold ${colors.text}`}>
                             API Rate Limit
                         </h3>
+                        {source && (
+                            <span className={`text-xs px-2 py-0.5 rounded ${
+                                source === 'server'
+                                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                    : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                            }`}>
+                                {source === 'server' ? '✓ Server (100%)' : '⚠ Local'}
+                            </span>
+                        )}
                     </div>
 
                     {/* Usage Stats */}

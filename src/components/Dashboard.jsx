@@ -9,7 +9,7 @@ import RateLimitIndicator from './RateLimitIndicator';
 import { fetchConversionReport } from '../api/shopee';
 import { supabase } from '../supabaseClient';
 import { getCachedData, setCachedData, clearCache, clearAllCaches, getCacheStats } from '../utils/cache';
-import { incrementRequestCount, getRateLimitStatus, resetRateLimit } from '../utils/rateLimit';
+import { getRateLimitStatus, getRateLimitStatusFromServer, resetRateLimit } from '../utils/rateLimit';
 
 const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }) => {
     const [startDate, setStartDate] = useState('');
@@ -48,6 +48,24 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
 
         initDashboard();
     }, [navigate]);
+
+    // Fetch rate limit status from server periodically
+    useEffect(() => {
+        const updateRateLimitStatus = async () => {
+            if (appId) {
+                const status = await getRateLimitStatusFromServer(appId);
+                setRateLimitStatus(status);
+            }
+        };
+
+        // Update immediately
+        updateRateLimitStatus();
+
+        // Update every 30 seconds
+        const interval = setInterval(updateRateLimitStatus, 30000);
+
+        return () => clearInterval(interval);
+    }, [appId]);
 
     // Auto-load data on initial mount when all required values are ready
     useEffect(() => {
@@ -117,10 +135,6 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
             while (hasNextPage && pageCount < 100) {
                 pageCount++;
 
-                // Increment API request count before making the call
-                incrementRequestCount(1);
-                setRateLimitStatus(getRateLimitStatus());
-
                 const result = await fetchConversionReport(appId, secret, {
                     purchaseTimeStart: startTimestamp,
                     purchaseTimeEnd: endTimestamp,
@@ -160,6 +174,10 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
             // Save to cache
             setCachedData(appId, startTimestamp, endTimestamp, allData);
             setData(allData);
+
+            // Update rate limit status from server after fetching
+            const updatedStatus = await getRateLimitStatusFromServer(appId);
+            setRateLimitStatus(updatedStatus);
         } catch (err) {
             setError(err.message || 'Failed to fetch data');
         } finally {

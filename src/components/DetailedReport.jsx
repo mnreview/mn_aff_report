@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DetailedReportFilters from './DetailedReportFilters';
 import { generateShortLink } from '../api/shopee';
-import { incrementRequestCount } from '../utils/rateLimit';
+import { logLinkGeneration } from '../utils/rateLimit';
 
 const DetailedReport = ({ data, appId, secret }) => {
     const [filters, setFilters] = useState({
@@ -79,8 +79,8 @@ const DetailedReport = ({ data, appId, secret }) => {
             // Construct origin URL
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
 
-            // Increment API request count
-            incrementRequestCount(1);
+            // Log link generation to server
+            await logLinkGeneration(appId);
 
             // Generate short link with SubID
             const shortLink = await generateShortLink(appId, secret, originUrl, ["detail", "porto", "mng", "report"]);

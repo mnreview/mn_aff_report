@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { generateShortLink } from '../api/shopee';
-import { incrementRequestCount } from '../utils/rateLimit';
+import { logLinkGeneration } from '../utils/rateLimit';
 
 const TopLists = ({ data, appId, secret, userId }) => {
     // CSV Export Function
@@ -45,8 +45,8 @@ const TopLists = ({ data, appId, secret, userId }) => {
             // Format: https://shopee.co.th/product/{shopId}/{itemId}
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
 
-            // Increment API request count
-            incrementRequestCount(1);
+            // Log link generation to server
+            await logLinkGeneration(appId);
 
             // Generate short link with custom subIds
             const shortLink = await generateShortLink(appId, secret, originUrl, customSubIds);

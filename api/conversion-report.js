@@ -1,6 +1,7 @@
 import cors from 'cors';
 import axios from 'axios';
 import crypto from 'crypto-js';
+import { logApiRequest, isRateLimitExceeded } from '../utils/serverRateLimit.js';
 
 // Initialize the cors middleware
 const corsMiddleware = cors({
@@ -45,11 +46,32 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Missing appId, secret, or query' });
     }
 
+    // Check rate limit before making request
+    const limitExceeded = await isRateLimitExceeded(appId);
+    if (limitExceeded) {
+        return res.status(429).json({
+            error: 'Rate limit exceeded',
+            message: 'You have exceeded Shopee API rate limit of 2000 requests per hour',
+            code: 10030
+        });
+    }
+
     const timestamp = Math.floor(Date.now() / 1000);
     const payload = JSON.stringify({ query });
     const signature = generateSignature(appId, secret, payload, timestamp);
 
     try {
+        // Log the API request to Supabase
+        await logApiRequest({
+            appId,
+            endpoint: SHOPEE_API_URL,
+            requestType: 'conversion_report',
+            ipAddress: req.headers['x-forwarded-for'] || req.connection?.remoteAddress,
+            userAgent: req.headers['user-agent'],
+            metadata: {
+                query: query.substring(0, 100) // First 100 chars for reference
+            }
+        });
         const response = await axios.post(
             SHOPEE_API_URL,
             { query },
