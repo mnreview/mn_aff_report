@@ -6,6 +6,7 @@ import DetailedReport from './components/DetailedReport';
 import Auth from './components/Auth';
 import ApiConfig from './components/ApiConfig';
 import Settings from './components/Settings';
+import Pricing from './components/Pricing';
 
 const ProtectedRoute = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -92,6 +93,7 @@ function App() {
             <Settings />
           </ProtectedRoute>
         } />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </Router>
   );
