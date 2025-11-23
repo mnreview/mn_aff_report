@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { supabase } from './supabaseClient';
 import Dashboard from './components/Dashboard';
 import DetailedReport from './components/DetailedReport';
+import ClickReport from './components/ClickReport';
 import Auth from './components/Auth';
 import ApiConfig from './components/ApiConfig';
 import Settings from './components/Settings';
@@ -90,6 +91,15 @@ function App() {
           <ProtectedRoute>
             <DetailedReport
               data={data}
+              appId={appId}
+              secret={secret}
+              userId={userId}
+            />
+          </ProtectedRoute>
+        } />
+        <Route path="/click-report" element={
+          <ProtectedRoute>
+            <ClickReport
               appId={appId}
               secret={secret}
               userId={userId}
