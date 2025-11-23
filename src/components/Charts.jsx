@@ -63,41 +63,41 @@ const Charts = ({ data }) => {
     };
 
     return (
-        <div className="glass-card p-8 rounded-2xl mb-8">
-            <div className="flex items-center justify-between mb-6">
+        <div className="glass-card p-4 md:p-8 rounded-2xl mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 gap-3 md:gap-0">
                 <div>
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                        <span className="w-1 h-6 bg-orange-500 rounded-full"></span>
+                    <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+                        <span className="w-1 h-5 md:h-6 bg-orange-500 rounded-full"></span>
                         Performance Trend
                     </h3>
-                    <p className="text-slate-400 text-sm ml-3">Daily performance overview</p>
+                    <p className="text-slate-400 text-xs md:text-sm ml-3">Daily performance overview</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-0">
                     <button
                         onClick={() => toggleMetric('commission')}
-                        className={`flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 ${!visibleMetrics.commission ? 'opacity-40' : 'opacity-100'}`}
+                        className={`flex items-center gap-1.5 md:gap-2 bg-slate-800/50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 whitespace-nowrap ${!visibleMetrics.commission ? 'opacity-40' : 'opacity-100'}`}
                     >
                         <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>
-                        <span className="text-xs text-slate-300 font-medium">Commission</span>
+                        <span className="text-[10px] md:text-xs text-slate-300 font-medium">Commission</span>
                     </button>
                     <button
                         onClick={() => toggleMetric('orders')}
-                        className={`flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 ${!visibleMetrics.orders ? 'opacity-40' : 'opacity-100'}`}
+                        className={`flex items-center gap-1.5 md:gap-2 bg-slate-800/50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 whitespace-nowrap ${!visibleMetrics.orders ? 'opacity-40' : 'opacity-100'}`}
                     >
                         <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
-                        <span className="text-xs text-slate-300 font-medium">Orders</span>
+                        <span className="text-[10px] md:text-xs text-slate-300 font-medium">Orders</span>
                     </button>
                     <button
                         onClick={() => toggleMetric('orderValue')}
-                        className={`flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 ${!visibleMetrics.orderValue ? 'opacity-40' : 'opacity-100'}`}
+                        className={`flex items-center gap-1.5 md:gap-2 bg-slate-800/50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-white/5 transition-all cursor-pointer hover:bg-slate-700/50 whitespace-nowrap ${!visibleMetrics.orderValue ? 'opacity-40' : 'opacity-100'}`}
                     >
                         <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-                        <span className="text-xs text-slate-300 font-medium">Order Value</span>
+                        <span className="text-[10px] md:text-xs text-slate-300 font-medium">Order Value</span>
                     </button>
                 </div>
             </div>
 
-            <div className="h-80 w-full">
+            <div className="h-64 md:h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={chartData}>
                         <defs>
