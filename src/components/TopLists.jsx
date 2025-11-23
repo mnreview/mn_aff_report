@@ -2,6 +2,40 @@ import React, { useMemo } from 'react';
 import { generateShortLink } from '../api/shopee';
 
 const TopLists = ({ data, appId, secret, userId }) => {
+    // CSV Export Function
+    const exportToCSV = (data, filename) => {
+        if (!data || data.length === 0) return;
+
+        // Get headers from the first object
+        const headers = Object.keys(data[0]);
+
+        // Create CSV content
+        const csvContent = [
+            headers.join(','), // Header row
+            ...data.map(row =>
+                headers.map(header => {
+                    const value = row[header];
+                    // Escape commas and quotes in values
+                    if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value;
+                }).join(',')
+            )
+        ].join('\n');
+
+        // Create blob and download
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const handleProductClick = async (item, customSubIds = []) => {
         if (!item.shopId || !item.itemId) return;
 
@@ -152,15 +186,39 @@ const TopLists = ({ data, appId, secret, userId }) => {
             {/* Top 10 by Commission */}
             <div className="glass-card rounded-2xl overflow-hidden">
                 <div className="bg-gradient-to-r from-emerald-600/20 to-teal-600/20 p-5 border-b border-white/5">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <div className="p-1.5 bg-emerald-500/20 rounded-lg">
-                            <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-emerald-500/20 rounded-lg">
+                                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                Top Products Revenue
+                            </h3>
+                            <p className="text-slate-400 mt-1 text-xs">สินค้าที่ได้ค่าคอมมิชชั่นสูงสุด 10 อันดับ</p>
                         </div>
-                        Top Products Revenue
-                    </h3>
-                    <p className="text-slate-400 mt-1 text-xs">สินค้าที่ได้ค่าคอมมิชชั่นสูงสุด 10 อันดับ</p>
+                        <button
+                            onClick={() => exportToCSV(
+                                topByCommission.map(item => ({
+                                    Rank: topByCommission.indexOf(item) + 1,
+                                    'Item Name': item.itemName,
+                                    'Shop Name': item.shopName,
+                                    'Channel Type': item.channelType,
+                                    'Price': item.price,
+                                    'Quantity': item.qty,
+                                    'Commission': Number(item.commission || 0).toFixed(2)
+                                })),
+                                'top_products_revenue'
+                            )}
+                            className="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-emerald-500/20"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
                 </div>
                 <div className="p-4 space-y-3">
                     {topByCommission.map((item, index) => (
@@ -202,18 +260,41 @@ const TopLists = ({ data, appId, secret, userId }) => {
                 </div>
             </div>
 
-            {/* Top 10 by Items Sold */}
+            {/* Top Items Sold */}
             <div className="glass-card rounded-2xl overflow-hidden">
                 <div className="bg-gradient-to-r from-orange-600/20 to-red-600/20 p-5 border-b border-white/5">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <div className="p-1.5 bg-orange-500/20 rounded-lg">
-                            <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-orange-500/20 rounded-lg">
+                                    <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </div>
+                                Top Items Sold
+                            </h3>
+                            <p className="text-slate-400 mt-1 text-xs">สินค้าที่ขายได้มากที่สุด</p>
                         </div>
-                        Top 10 Items Sold
-                    </h3>
-                    <p className="text-slate-400 mt-1 text-xs">สินค้าที่ขายได้มากที่สุด</p>
+                        <button
+                            onClick={() => exportToCSV(
+                                topByQuantity.map(item => ({
+                                    Rank: topByQuantity.indexOf(item) + 1,
+                                    'Item Name': item.itemName,
+                                    'Shop Name': item.shopName,
+                                    'Channel Type': item.channelType,
+                                    'Quantity': item.qty,
+                                    'Commission': Number(item.commission || 0).toFixed(2)
+                                })),
+                                'top_items_sold'
+                            )}
+                            className="px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-orange-500/20"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
                 </div>
                 <div className="p-4 space-y-3">
                     {topByQuantity.map((item, index) => (
@@ -259,15 +340,37 @@ const TopLists = ({ data, appId, secret, userId }) => {
             {/* Top 10 Revenue by SubID */}
             <div className="glass-card rounded-2xl overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 p-5 border-b border-white/5">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <div className="p-1.5 bg-blue-500/20 rounded-lg">
-                            <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                            </svg>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-blue-500/20 rounded-lg">
+                                    <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                    </svg>
+                                </div>
+                                Top 10 Revenue by SubID
+                            </h3>
+                            <p className="text-slate-400 mt-1 text-xs">SubID ที่สร้างรายได้สูงสุด</p>
                         </div>
-                        Top 10 Revenue by SubID
-                    </h3>
-                    <p className="text-slate-400 mt-1 text-xs">SubID ที่สร้างรายได้สูงสุด</p>
+                        <button
+                            onClick={() => exportToCSV(
+                                topSubIdByRevenue.map(item => ({
+                                    Rank: topSubIdByRevenue.indexOf(item) + 1,
+                                    'SubID': item.subId,
+                                    'Orders': item.orders,
+                                    'Items': item.items,
+                                    'Commission': Number(item.commission || 0).toFixed(2)
+                                })),
+                                'top_revenue_by_subid'
+                            )}
+                            className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-blue-500/20"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
                 </div>
                 <div className="p-4 space-y-3">
                     {topSubIdByRevenue.map((item, index) => (
@@ -292,15 +395,36 @@ const TopLists = ({ data, appId, secret, userId }) => {
             {/* Top 10 Order by SubID */}
             <div className="glass-card rounded-2xl overflow-hidden">
                 <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 p-5 border-b border-white/5">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <div className="p-1.5 bg-purple-500/20 rounded-lg">
-                            <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-purple-500/20 rounded-lg">
+                                    <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </div>
+                                Top 10 Order by SubID
+                            </h3>
+                            <p className="text-slate-400 mt-1 text-xs">SubID ที่มีจำนวนออเดอร์สูงสุด</p>
                         </div>
-                        Top 10 Order by SubID
-                    </h3>
-                    <p className="text-slate-400 mt-1 text-xs">SubID ที่มีจำนวนออเดอร์สูงสุด</p>
+                        <button
+                            onClick={() => exportToCSV(
+                                topSubIdByOrders.map(item => ({
+                                    Rank: topSubIdByOrders.indexOf(item) + 1,
+                                    'SubID': item.subId,
+                                    'Orders': item.orders,
+                                    'Commission': Number(item.commission || 0).toFixed(2)
+                                })),
+                                'top_orders_by_subid'
+                            )}
+                            className="px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-purple-500/20"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
                 </div>
                 <div className="p-4 space-y-3">
                     {topSubIdByOrders.map((item, index) => (
