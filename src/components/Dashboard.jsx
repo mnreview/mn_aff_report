@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Filters from './Filters';
 import SummaryCards from './SummaryCards';
 import Charts from './Charts';
 import TopLists from './TopLists';
 import DetailedReportFilters from './DetailedReportFilters';
 import { fetchConversionReport } from '../api/shopee';
+import { supabase } from '../supabaseClient';
 
 const Dashboard = ({ data, setData }) => {
     const [appId, setAppId] = useState('');
@@ -15,7 +16,7 @@ const Dashboard = ({ data, setData }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
-    const [showCredentials, setShowCredentials] = useState(false);
+    const navigate = useNavigate();
 
     const [filters, setFilters] = useState({
         subId: '',
@@ -25,28 +26,44 @@ const Dashboard = ({ data, setData }) => {
     });
 
     useEffect(() => {
-        const storedAppId = localStorage.getItem('shopee_app_id');
-        const storedSecret = localStorage.getItem('shopee_secret');
-        if (storedAppId) setAppId(storedAppId);
-        if (storedSecret) setSecret(storedSecret);
+        const initDashboard = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) return;
 
-        if (!startDate && !endDate) {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-            setStartDate(yesterdayStr);
-            setEndDate(yesterdayStr);
-        }
-    }, []);
+                const { data: config, error } = await supabase
+                    .from('user_api_configs')
+                    .select('app_id, app_secret')
+                    .eq('user_id', user.id)
+                    .single();
+
+                if (config) {
+                    setAppId(config.app_id);
+                    setSecret(config.app_secret);
+                }
+
+                // Set default dates
+                if (!startDate && !endDate) {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const yesterdayStr = yesterday.toISOString().split('T')[0];
+                    setStartDate(yesterdayStr);
+                    setEndDate(yesterdayStr);
+                }
+            } catch (err) {
+                console.error('Error initializing dashboard:', err);
+            }
+        };
+
+        initDashboard();
+    }, [navigate]);
 
     const handleSearch = async () => {
         if (!appId || !secret) {
-            setError('Please enter App ID and Secret');
+            setError('API Configuration missing. Please check your settings.');
             return;
         }
 
-        localStorage.setItem('shopee_app_id', appId);
-        localStorage.setItem('shopee_secret', secret);
         setLoading(true);
         setError(null);
 
@@ -152,6 +169,11 @@ const Dashboard = ({ data, setData }) => {
         });
     };
 
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate('/login');
+    };
+
     return (
         <div className="min-h-screen bg-transparent pb-12">
             {/* Navbar / Header */}
@@ -170,66 +192,21 @@ const Dashboard = ({ data, setData }) => {
                             <p className="text-slate-400 text-xs font-medium">Dashboard & Analytics</p>
                         </div>
                     </div>
-                    <Link to="/report" className="group relative px-6 py-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 border border-white/10 transition-all duration-300 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="relative flex items-center gap-2 text-sm font-medium text-slate-200 group-hover:text-white">
-                            View Detailed Report
-                            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </span>
-                    </Link>
+                    <div className="flex items-center gap-4">
+                        <Link to="/report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
+                            Detailed Report
+                        </Link>
+                        <Link to="/settings" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
+                            Settings
+                        </Link>
+                        <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 text-sm font-medium transition-colors">
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-                {/* API Credentials Section */}
-                <div className="glass-card p-6 rounded-2xl mb-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold text-white flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 16l-1.536 4.442-1.536-4.442L4.257 9.257A6 6 0 0115 7z" />
-                                </svg>
-                            </div>
-                            API Configuration
-                        </h2>
-                        <button
-                            onClick={() => setShowCredentials(!showCredentials)}
-                            className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg"
-                        >
-                            <svg className={`w-5 h-5 transition-transform ${showCredentials ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    {showCredentials && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-                            <div className="group">
-                                <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">App ID</label>
-                                <input
-                                    type="text"
-                                    value={appId}
-                                    onChange={(e) => setAppId(e.target.value)}
-                                    className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
-                                    placeholder="Enter your App ID"
-                                />
-                            </div>
-                            <div className="group">
-                                <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">Secret Key</label>
-                                <input
-                                    type="password"
-                                    value={secret}
-                                    onChange={(e) => setSecret(e.target.value)}
-                                    className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-slate-600"
-                                    placeholder="Enter your Secret"
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
-
                 <Filters
                     startDate={startDate}
                     setStartDate={setStartDate}
