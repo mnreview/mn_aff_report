@@ -124,7 +124,7 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
                 const result = await fetchConversionReport(appId, secret, {
                     purchaseTimeStart: startTimestamp,
                     purchaseTimeEnd: endTimestamp,
-                    limit: 100,
+                    limit: 500,
                     scrollId: scrollId
                 });
 
