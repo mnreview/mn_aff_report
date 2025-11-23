@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DetailedReportFilters from './DetailedReportFilters';
+import { generateShortLink } from '../api/shopee';
 
-const DetailedReport = ({ data }) => {
+const DetailedReport = ({ data, appId, secret }) => {
     const [filters, setFilters] = useState({
         subId: '',
         clickDateFrom: '',
@@ -68,6 +69,26 @@ const DetailedReport = ({ data }) => {
             clickDateTo: '',
             channelType: ''
         });
+    };
+
+    const handleProductClick = async (item) => {
+        if (!item?.shopId || !item?.itemId) return;
+
+        try {
+            // Construct origin URL
+            const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
+
+            // Generate short link
+            const shortLink = await generateShortLink(appId, secret, originUrl);
+
+            // Open in new tab
+            window.open(shortLink, '_blank');
+        } catch (error) {
+            console.error("Failed to generate link:", error);
+            // Fallback to origin URL
+            const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
+            window.open(originUrl, '_blank');
+        }
     };
 
     return (
@@ -137,9 +158,20 @@ const DetailedReport = ({ data }) => {
                                         <td className="px-4 py-3 text-sm text-slate-600 min-w-[200px]">
                                             <div className="flex items-center">
                                                 {row.item?.imageUrl && (
-                                                    <img src={row.item.imageUrl} alt="" className="h-8 w-8 rounded mr-2 object-cover border border-slate-100" />
+                                                    <img
+                                                        src={row.item.imageUrl}
+                                                        alt=""
+                                                        className="h-8 w-8 rounded mr-2 object-cover border border-slate-100 cursor-pointer hover:opacity-80 transition-opacity"
+                                                        onClick={() => handleProductClick(row.item)}
+                                                    />
                                                 )}
-                                                <span className="truncate max-w-[200px]" title={row.item?.itemName}>{row.item?.itemName || '-'}</span>
+                                                <span
+                                                    className="truncate max-w-[200px] cursor-pointer hover:text-blue-600 transition-colors"
+                                                    title={row.item?.itemName}
+                                                    onClick={() => handleProductClick(row.item)}
+                                                >
+                                                    {row.item?.itemName || '-'}
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">{row.item?.itemPrice || '-'}</td>

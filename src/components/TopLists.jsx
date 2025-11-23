@@ -1,6 +1,28 @@
 import React, { useMemo } from 'react';
+import { generateShortLink } from '../api/shopee';
 
-const TopLists = ({ data }) => {
+const TopLists = ({ data, appId, secret, userId }) => {
+    const handleProductClick = async (item, customSubIds = []) => {
+        if (!item.shopId || !item.itemId) return;
+
+        try {
+            // Construct origin URL
+            // Format: https://shopee.co.th/product/{shopId}/{itemId}
+            const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
+
+            // Generate short link with custom subIds
+            const shortLink = await generateShortLink(appId, secret, originUrl, customSubIds);
+
+            // Open in new tab
+            window.open(shortLink, '_blank');
+        } catch (error) {
+            console.error("Failed to generate link:", error);
+            // Fallback to origin URL if API fails
+            const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
+            window.open(originUrl, '_blank');
+        }
+    };
+
     // Calculate top 10 by commission
     const topByCommission = useMemo(() => {
         const itemsWithCommission = [];
@@ -12,6 +34,8 @@ const TopLists = ({ data }) => {
                         itemName: item.itemName,
                         imageUrl: item.imageUrl,
                         shopName: item.shopName,
+                        shopId: item.shopId,
+                        itemId: item.itemId,
                         commission: item.itemTotalCommission || 0,
                         qty: item.qty || 0,
                         price: item.itemPrice || 0,
@@ -43,6 +67,8 @@ const TopLists = ({ data }) => {
                             itemName: item.itemName,
                             imageUrl: item.imageUrl,
                             shopName: item.shopName,
+                            shopId: item.shopId,
+                            itemId: item.itemId,
                             commission: item.itemTotalCommission || 0,
                             qty: item.qty || 0,
                             price: item.itemPrice || 0,
@@ -143,10 +169,19 @@ const TopLists = ({ data }) => {
                                 {index + 1}
                             </div>
                             {item.imageUrl && (
-                                <img src={item.imageUrl} alt="" className="w-12 h-12 rounded-lg object-cover border border-white/10" />
+                                <img
+                                    src={item.imageUrl}
+                                    alt=""
+                                    className="w-12 h-12 rounded-lg object-cover border border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
+                                    onClick={() => handleProductClick(item, ["toppro", "porto", "mng", "report"])}
+                                />
                             )}
                             <div className="flex-1 min-w-0">
-                                <p className="font-medium text-slate-200 truncate text-sm" title={item.itemName}>
+                                <p
+                                    className="font-medium text-slate-200 truncate text-sm cursor-pointer hover:text-emerald-400 transition-colors"
+                                    title={item.itemName}
+                                    onClick={() => handleProductClick(item, ["toppro", "porto", "mng", "report"])}
+                                >
                                     {item.itemName}
                                 </p>
                                 <p className="text-xs text-slate-400">{item.shopName}</p>
@@ -187,10 +222,19 @@ const TopLists = ({ data }) => {
                                 {index + 1}
                             </div>
                             {item.imageUrl && (
-                                <img src={item.imageUrl} alt="" className="w-12 h-12 rounded-lg object-cover border border-white/10" />
+                                <img
+                                    src={item.imageUrl}
+                                    alt=""
+                                    className="w-12 h-12 rounded-lg object-cover border border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
+                                    onClick={() => handleProductClick(item, ["topitem", "porto", "mng", "report"])}
+                                />
                             )}
                             <div className="flex-1 min-w-0">
-                                <p className="font-medium text-slate-200 truncate text-sm" title={item.itemName}>
+                                <p
+                                    className="font-medium text-slate-200 truncate text-sm cursor-pointer hover:text-orange-400 transition-colors"
+                                    title={item.itemName}
+                                    onClick={() => handleProductClick(item, ["topitem", "porto", "mng", "report"])}
+                                >
                                     {item.itemName}
                                 </p>
                                 <p className="text-xs text-slate-400">{item.shopName}</p>

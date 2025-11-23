@@ -9,9 +9,7 @@ import { fetchConversionReport } from '../api/shopee';
 import { supabase } from '../supabaseClient';
 import { getCachedData, setCachedData, clearCache, clearAllCaches, getCacheStats } from '../utils/cache';
 
-const Dashboard = ({ data, setData }) => {
-    const [appId, setAppId] = useState('');
-    const [secret, setSecret] = useState('');
+const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [loading, setLoading] = useState(false);
@@ -31,20 +29,6 @@ const Dashboard = ({ data, setData }) => {
     useEffect(() => {
         const initDashboard = async () => {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) return;
-
-                const { data: config, error } = await supabase
-                    .from('user_api_configs')
-                    .select('app_id, app_secret')
-                    .eq('user_id', user.id)
-                    .single();
-
-                if (config) {
-                    setAppId(config.app_id);
-                    setSecret(config.app_secret);
-                }
-
                 // Set default dates (Yesterday)
                 if (!startDate && !endDate) {
                     const today = new Date();
@@ -315,7 +299,7 @@ const Dashboard = ({ data, setData }) => {
                         )}
                         <SummaryCards data={filteredData} />
                         <Charts data={filteredData} />
-                        <TopLists data={filteredData} />
+                        <TopLists data={filteredData} appId={appId} secret={secret} userId={userId} />
                     </div>
                 )}
             </div>

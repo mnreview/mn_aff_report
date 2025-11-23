@@ -33,6 +33,31 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   // Lift state up to share data between Dashboard and DetailedReport
   const [data, setData] = useState([]);
+  const [appId, setAppId] = useState('');
+  const [secret, setSecret] = useState('');
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      setUserId(user.id);
+
+      const { data: config } = await supabase
+        .from('user_api_configs')
+        .select('app_id, app_secret')
+        .eq('user_id', user.id)
+        .single();
+
+      if (config) {
+        setAppId(config.app_id);
+        setSecret(config.app_secret);
+      }
+    };
+
+    fetchConfig();
+  }, []);
 
   return (
     <Router>
@@ -41,12 +66,25 @@ function App() {
         <Route path="/setup-api" element={<ApiConfig />} />
         <Route path="/" element={
           <ProtectedRoute>
-            <Dashboard data={data} setData={setData} />
+            <Dashboard
+              data={data}
+              setData={setData}
+              appId={appId}
+              secret={secret}
+              setAppId={setAppId}
+              setSecret={setSecret}
+              userId={userId}
+            />
           </ProtectedRoute>
         } />
         <Route path="/report" element={
           <ProtectedRoute>
-            <DetailedReport data={data} />
+            <DetailedReport
+              data={data}
+              appId={appId}
+              secret={secret}
+              userId={userId}
+            />
           </ProtectedRoute>
         } />
         <Route path="/settings" element={

@@ -75,3 +75,33 @@ export const fetchConversionReport = async (appId, secret, params) => {
     throw error;
   }
 };
+
+export const generateShortLink = async (appId, secret, originUrl, subIds = []) => {
+  const query = `
+    mutation {
+      generateShortLink(input: {
+        originUrl: ${JSON.stringify(originUrl)},
+        subIds: ${JSON.stringify(subIds)}
+      }) {
+        shortLink
+      }
+    }
+  `;
+
+  try {
+    const response = await axios.post(PROXY_URL, {
+      appId,
+      secret,
+      query
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.generateShortLink.shortLink;
+  } catch (error) {
+    console.error("Error generating short link:", error);
+    throw error;
+  }
+};
