@@ -207,10 +207,6 @@ const Dashboard = ({ data, setData }) => {
         alert(`Cleared ${count} cache(s) successfully!`);
     };
 
-    const handleForceRefresh = () => {
-        handleSearch(startDate, endDate, true);
-    };
-
     const handleLogout = async () => {
         await supabase.auth.signOut();
         navigate('/login');
@@ -268,8 +264,6 @@ const Dashboard = ({ data, setData }) => {
                     showFilters={showFilters}
                     setShowFilters={setShowFilters}
                     hasData={data.length > 0}
-                    usingCache={usingCache}
-                    onForceRefresh={handleForceRefresh}
                 />
 
                 {data.length > 0 && (

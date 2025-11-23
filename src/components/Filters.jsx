@@ -1,7 +1,7 @@
 import React from 'react';
 import DateRangePicker from './DateRangePicker';
 
-const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showFilters, setShowFilters, hasData, usingCache, onForceRefresh }) => {
+const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showFilters, setShowFilters, hasData }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
 
     // Function to detect which preset matches the current date range
@@ -138,26 +138,6 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    {usingCache && hasData && (
-                        <div className="flex items-center gap-2">
-                            <div className="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                                <span className="text-xs text-green-300 font-medium">Cached</span>
-                            </div>
-                            {onForceRefresh && (
-                                <button
-                                    onClick={onForceRefresh}
-                                    className="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-300 hover:bg-orange-500/20 text-xs font-medium transition-all flex items-center gap-1.5"
-                                    title="Force refresh data from API"
-                                >
-                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
-                                    Refresh
-                                </button>
-                            )}
-                        </div>
-                    )}
                     {hasData && (
                         <button
                             onClick={() => setShowFilters(!showFilters)}
