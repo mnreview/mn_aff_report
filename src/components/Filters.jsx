@@ -1,6 +1,8 @@
 import React from 'react';
 
 const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch }) => {
+    const [isExpanded, setIsExpanded] = React.useState(false);
+
     const handlePresetChange = (preset) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -43,9 +45,44 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch }) => 
         setEndDate(end.toISOString().split('T')[0]);
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return '-';
+        return new Date(dateString).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    };
+
     return (
-        <div className="glass-card p-6 rounded-2xl mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <div className="glass-card p-6 rounded-2xl mb-8 transition-all duration-300">
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-semibold text-white">Date Range</h2>
+                        {!isExpanded && (
+                            <p className="text-sm text-indigo-300 font-medium">
+                                {formatDate(startDate)} - {formatDate(endDate)}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg"
+                >
+                    <svg className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div className={`grid grid-cols-1 md:grid-cols-12 gap-4 items-end transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="md:col-span-3">
                     <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">Quick Select</label>
                     <div className="relative">
