@@ -7,6 +7,7 @@ import TopLists from './TopLists';
 import DetailedReportFilters from './DetailedReportFilters';
 import { fetchConversionReport } from '../api/shopee';
 import { supabase } from '../supabaseClient';
+import { getCachedData, setCachedData, clearCache, clearAllCaches, getCacheStats } from '../utils/cache';
 
 const Dashboard = ({ data, setData }) => {
     const [appId, setAppId] = useState('');
@@ -16,6 +17,7 @@ const Dashboard = ({ data, setData }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
+    const [usingCache, setUsingCache] = useState(false);
     const navigate = useNavigate();
     const hasLoadedInitialData = useRef(false);
 
@@ -68,7 +70,7 @@ const Dashboard = ({ data, setData }) => {
         }
     }, [appId, secret, startDate, endDate]);
 
-    const handleSearch = async (overrideStart, overrideEnd) => {
+    const handleSearch = async (overrideStart, overrideEnd, forceRefresh = false) => {
         if (!appId || !secret) {
             setError('API Configuration missing. Please check your settings.');
             return;
@@ -76,6 +78,7 @@ const Dashboard = ({ data, setData }) => {
 
         setLoading(true);
         setError(null);
+        setUsingCache(false);
 
         try {
             let startTimestamp, endTimestamp;
@@ -103,9 +106,22 @@ const Dashboard = ({ data, setData }) => {
             console.log('Fetching data:', {
                 startDate: currentStartDate, endDate: currentEndDate,
                 startTimestamp, endTimestamp,
-                days: Math.ceil((endTimestamp - startTimestamp) / 86400)
+                days: Math.ceil((endTimestamp - startTimestamp) / 86400),
+                forceRefresh
             });
 
+            // Check cache first (unless force refresh)
+            if (!forceRefresh) {
+                const cachedData = getCachedData(appId, startTimestamp, endTimestamp);
+                if (cachedData) {
+                    setData(cachedData);
+                    setUsingCache(true);
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            // Cache miss or force refresh - fetch from API
             let allData = [];
             let scrollId = '';
             let hasNextPage = true;
@@ -140,6 +156,8 @@ const Dashboard = ({ data, setData }) => {
                 }
             }
 
+            // Save to cache
+            setCachedData(appId, startTimestamp, endTimestamp, allData);
             setData(allData);
         } catch (err) {
             setError(err.message || 'Failed to fetch data');
@@ -183,6 +201,16 @@ const Dashboard = ({ data, setData }) => {
         });
     };
 
+    const handleClearCache = () => {
+        const count = clearAllCaches();
+        setUsingCache(false);
+        alert(`Cleared ${count} cache(s) successfully!`);
+    };
+
+    const handleForceRefresh = () => {
+        handleSearch(startDate, endDate, true);
+    };
+
     const handleLogout = async () => {
         await supabase.auth.signOut();
         navigate('/login');
@@ -213,6 +241,16 @@ const Dashboard = ({ data, setData }) => {
                         <Link to="/settings" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
                             Settings
                         </Link>
+                        <button
+                            onClick={handleClearCache}
+                            className="text-slate-400 hover:text-orange-400 text-sm font-medium transition-colors flex items-center gap-1"
+                            title="Clear all cached data"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Clear Cache
+                        </button>
                         <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 text-sm font-medium transition-colors">
                             Sign Out
                         </button>
@@ -230,6 +268,8 @@ const Dashboard = ({ data, setData }) => {
                     showFilters={showFilters}
                     setShowFilters={setShowFilters}
                     hasData={data.length > 0}
+                    usingCache={usingCache}
+                    onForceRefresh={handleForceRefresh}
                 />
 
                 {data.length > 0 && (
