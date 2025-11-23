@@ -22,7 +22,7 @@ const Auth = () => {
                     password,
                 });
                 if (error) throw error;
-                navigate('/');
+                navigate('/dashboard');
             } else {
                 const { error } = await supabase.auth.signUp({
                     email,
