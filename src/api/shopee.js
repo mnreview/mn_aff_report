@@ -12,7 +12,7 @@ export const fetchConversionReport = async (appId, secret, params) => {
       conversionReport(
         purchaseTimeStart: ${params.purchaseTimeStart},
         purchaseTimeEnd: ${params.purchaseTimeEnd},
-        limit: ${params.limit || 50},
+        limit: ${params.limit || 500},
         scrollId: "${params.scrollId || ''}"
       ) {
         nodes {

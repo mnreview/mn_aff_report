@@ -5,9 +5,11 @@ import SummaryCards from './SummaryCards';
 import Charts from './Charts';
 import TopLists from './TopLists';
 import DetailedReportFilters from './DetailedReportFilters';
+import RateLimitIndicator from './RateLimitIndicator';
 import { fetchConversionReport } from '../api/shopee';
 import { supabase } from '../supabaseClient';
 import { getCachedData, setCachedData, clearCache, clearAllCaches, getCacheStats } from '../utils/cache';
+import { incrementRequestCount, getRateLimitStatus, resetRateLimit } from '../utils/rateLimit';
 
 const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }) => {
     const [startDate, setStartDate] = useState('');
@@ -16,6 +18,7 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
     const [usingCache, setUsingCache] = useState(false);
+    const [rateLimitStatus, setRateLimitStatus] = useState(getRateLimitStatus());
     const navigate = useNavigate();
     const hasLoadedInitialData = useRef(false);
 
@@ -113,10 +116,15 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
 
             while (hasNextPage && pageCount < 100) {
                 pageCount++;
+
+                // Increment API request count before making the call
+                incrementRequestCount(1);
+                setRateLimitStatus(getRateLimitStatus());
+
                 const result = await fetchConversionReport(appId, secret, {
                     purchaseTimeStart: startTimestamp,
                     purchaseTimeEnd: endTimestamp,
-                    limit: 100,
+                    limit: 500,
                     scrollId: scrollId
                 });
 
@@ -133,7 +141,16 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
                         hasNextPage = false;
                     }
                 } else if (result.errors) {
-                    setError(result.errors[0].message);
+                    const errorMessage = result.errors[0].message;
+                    const errorCode = result.errors[0].extensions?.code;
+
+                    // Check for rate limit error (code 10030)
+                    if (errorCode === 10030 || errorMessage.toLowerCase().includes('rate limit')) {
+                        const { timeUntilReset } = getRateLimitStatus();
+                        setError(`⚠️ Rate Limit Exceeded! You've hit Shopee's limit of 2000 requests per hour. Please wait ${timeUntilReset} for the counter to reset, or use cached data.`);
+                    } else {
+                        setError(errorMessage);
+                    }
                     break;
                 } else {
                     hasNextPage = false;
@@ -189,6 +206,12 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
         const count = clearAllCaches();
         setUsingCache(false);
         alert(`Cleared ${count} cache(s) successfully!`);
+    };
+
+    const handleResetRateLimit = () => {
+        resetRateLimit();
+        setRateLimitStatus(getRateLimitStatus());
+        alert('Rate limit counter has been reset!');
     };
 
     const handleLogout = async () => {
@@ -249,6 +272,14 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
                     setShowFilters={setShowFilters}
                     hasData={data.length > 0}
                 />
+
+                {/* Rate Limit Indicator */}
+                <div className="mt-6">
+                    <RateLimitIndicator
+                        status={rateLimitStatus}
+                        onReset={handleResetRateLimit}
+                    />
+                </div>
 
                 {data.length > 0 && (
                     <>

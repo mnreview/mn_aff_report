@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DetailedReportFilters from './DetailedReportFilters';
 import { generateShortLink } from '../api/shopee';
+import { incrementRequestCount } from '../utils/rateLimit';
 
 const DetailedReport = ({ data, appId, secret }) => {
     const [filters, setFilters] = useState({
@@ -78,6 +79,9 @@ const DetailedReport = ({ data, appId, secret }) => {
             // Construct origin URL
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
 
+            // Increment API request count
+            incrementRequestCount(1);
+
             // Generate short link with SubID
             const shortLink = await generateShortLink(appId, secret, originUrl, ["detail", "porto", "mng", "report"]);
 
@@ -85,6 +89,14 @@ const DetailedReport = ({ data, appId, secret }) => {
             window.open(shortLink, '_blank');
         } catch (error) {
             console.error("Failed to generate link:", error);
+
+            // Check if it's a rate limit error
+            if (error.response?.status === 429 ||
+                error.response?.data?.code === 10030 ||
+                error.message?.toLowerCase().includes('rate limit')) {
+                alert('⚠️ Rate Limit Exceeded!\n\nYou have hit Shopee\'s API limit of 2000 requests per hour.\nPlease wait for the counter to reset before generating more links.\n\nOpening product URL without affiliate tracking...');
+            }
+
             // Fallback to origin URL
             const originUrl = `https://shopee.co.th/product/${item.shopId}/${item.itemId}`;
             window.open(originUrl, '_blank');
