@@ -139,18 +139,17 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
                     </div>
                 </div>
 
-            </div>
-
-            <div className="mt-4">
-                <button
-                    onClick={onSearch}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-500 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/30 font-medium flex items-center justify-center gap-2 active:scale-95 transform duration-100 border border-white/10"
-                >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Fetch Data
-                </button>
+                <div className="md:col-span-3">
+                    <button
+                        onClick={onSearch}
+                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-500 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/30 font-medium flex items-center justify-center gap-2 active:scale-95 transform duration-100 border border-white/10"
+                    >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Fetch Data
+                    </button>
+                </div>
             </div>
         </div>
     );
