@@ -38,7 +38,7 @@ const ApiConfig = () => {
 
             if (error) throw error;
 
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Error saving config:', error);
             setError(error.message || 'Failed to save configuration. Please ensure the database table exists.');
@@ -112,7 +112,7 @@ const ApiConfig = () => {
 
                         <button
                             type="button"
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/dashboard')}
                             className="w-full bg-transparent hover:bg-white/5 text-slate-400 hover:text-white font-medium py-3 rounded-xl transition-all border border-transparent hover:border-white/10"
                         >
                             Skip for now
