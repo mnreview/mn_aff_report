@@ -58,7 +58,7 @@ const Dashboard = ({ data, setData }) => {
         initDashboard();
     }, [navigate]);
 
-    const handleSearch = async () => {
+    const handleSearch = async (overrideStart, overrideEnd) => {
         if (!appId || !secret) {
             setError('API Configuration missing. Please check your settings.');
             return;
@@ -70,16 +70,20 @@ const Dashboard = ({ data, setData }) => {
         try {
             let startTimestamp, endTimestamp;
 
-            if (startDate) {
-                const start = new Date(startDate);
+            // Use overrides if provided, otherwise fall back to state
+            const currentStartDate = overrideStart !== undefined ? overrideStart : startDate;
+            const currentEndDate = overrideEnd !== undefined ? overrideEnd : endDate;
+
+            if (currentStartDate) {
+                const start = new Date(currentStartDate);
                 start.setHours(0, 0, 0, 0);
                 startTimestamp = Math.floor(start.getTime() / 1000);
             } else {
                 startTimestamp = Math.floor(Date.now() / 1000) - 86400 * 7;
             }
 
-            if (endDate) {
-                const end = new Date(endDate);
+            if (currentEndDate) {
+                const end = new Date(currentEndDate);
                 end.setHours(23, 59, 59, 999);
                 endTimestamp = Math.floor(end.getTime() / 1000);
             } else {
@@ -87,7 +91,7 @@ const Dashboard = ({ data, setData }) => {
             }
 
             console.log('Fetching data:', {
-                startDate, endDate,
+                startDate: currentStartDate, endDate: currentEndDate,
                 startTimestamp, endTimestamp,
                 days: Math.ceil((endTimestamp - startTimestamp) / 86400)
             });

@@ -58,6 +58,47 @@ const TopLists = ({ data }) => {
             .slice(0, 10);
     }, [data]);
 
+    // Calculate SubID statistics
+    const subIdStats = useMemo(() => {
+        const stats = new Map();
+
+        data.forEach(conversion => {
+            const subId = conversion.utmContent || 'No SubID';
+            if (!stats.has(subId)) {
+                stats.set(subId, {
+                    subId,
+                    commission: 0,
+                    orders: 0,
+                    items: 0
+                });
+            }
+
+            const entry = stats.get(subId);
+
+            conversion.orders?.forEach(order => {
+                entry.orders += 1;
+                order.items?.forEach(item => {
+                    entry.commission += item.itemTotalCommission || 0;
+                    entry.items += item.qty || 0;
+                });
+            });
+        });
+
+        return Array.from(stats.values());
+    }, [data]);
+
+    const topSubIdByRevenue = useMemo(() => {
+        return [...subIdStats]
+            .sort((a, b) => b.commission - a.commission)
+            .slice(0, 10);
+    }, [subIdStats]);
+
+    const topSubIdByOrders = useMemo(() => {
+        return [...subIdStats]
+            .sort((a, b) => b.orders - a.orders)
+            .slice(0, 10);
+    }, [subIdStats]);
+
     if (data.length === 0) {
         return null;
     }
@@ -147,6 +188,73 @@ const TopLists = ({ data }) => {
                             <div className="text-right">
                                 <p className="text-lg font-bold text-orange-400">{item.qty}</p>
                                 <p className="text-[10px] text-slate-400">ชิ้น</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Top 10 Revenue by SubID */}
+            <div className="glass-card rounded-2xl overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 p-5 border-b border-white/5">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <div className="p-1.5 bg-blue-500/20 rounded-lg">
+                            <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        Top 10 Revenue by SubID
+                    </h3>
+                    <p className="text-slate-400 mt-1 text-xs">SubID ที่สร้างรายได้สูงสุด</p>
+                </div>
+                <div className="p-4 space-y-3">
+                    {topSubIdByRevenue.map((item, index) => (
+                        <div key={index} className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border border-white/5">
+                            <div className="flex-shrink-0 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-blue-400 font-bold text-sm border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                {index + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-slate-200 truncate text-sm" title={item.subId}>
+                                    {item.subId}
+                                </p>
+                                <p className="text-xs text-slate-400">{item.orders} Orders • {item.items} Items</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-lg font-bold text-blue-400">฿{Number(item.commission || 0).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Top 10 Order by SubID */}
+            <div className="glass-card rounded-2xl overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 p-5 border-b border-white/5">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <div className="p-1.5 bg-purple-500/20 rounded-lg">
+                            <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+                        Top 10 Order by SubID
+                    </h3>
+                    <p className="text-slate-400 mt-1 text-xs">SubID ที่มีจำนวนออเดอร์สูงสุด</p>
+                </div>
+                <div className="p-4 space-y-3">
+                    {topSubIdByOrders.map((item, index) => (
+                        <div key={index} className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border border-white/5">
+                            <div className="flex-shrink-0 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-purple-400 font-bold text-sm border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                                {index + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-slate-200 truncate text-sm" title={item.subId}>
+                                    {item.subId}
+                                </p>
+                                <p className="text-xs text-slate-400">฿{Number(item.commission || 0).toFixed(2)} Commission</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-lg font-bold text-purple-400">{item.orders}</p>
+                                <p className="text-[10px] text-slate-400">Orders</p>
                             </div>
                         </div>
                     ))}

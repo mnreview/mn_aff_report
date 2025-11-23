@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import DateRangePicker from './DateRangePicker';
 
 const DetailedReportFilters = ({ filters, setFilters, onReset, data = [] }) => {
     const [tempFilters, setTempFilters] = React.useState(filters);
@@ -39,7 +40,7 @@ const DetailedReportFilters = ({ filters, setFilters, onReset, data = [] }) => {
     }, [data]);
 
     return (
-        <div className="glass-card p-6 rounded-2xl mb-6">
+        <div className="glass-card relative z-20 p-6 rounded-2xl mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -58,23 +59,19 @@ const DetailedReportFilters = ({ filters, setFilters, onReset, data = [] }) => {
                     />
                 </div>
 
-                <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Click Date From</label>
-                    <input
-                        type="date"
-                        value={tempFilters.clickDateFrom}
-                        onChange={(e) => handleChange('clickDateFrom', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all [color-scheme:dark]"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Click Date To</label>
-                    <input
-                        type="date"
-                        value={tempFilters.clickDateTo}
-                        onChange={(e) => handleChange('clickDateTo', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all [color-scheme:dark]"
+                <div className="col-span-1 md:col-span-2">
+                    <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Date Range</label>
+                    <DateRangePicker
+                        startDate={tempFilters.clickDateFrom}
+                        endDate={tempFilters.clickDateTo}
+                        onChange={(start, end) => {
+                            const newFilters = { ...tempFilters, clickDateFrom: start, clickDateTo: end };
+                            setTempFilters(newFilters);
+                            // Auto-confirm as requested
+                            if (start && end) {
+                                setFilters(newFilters);
+                            }
+                        }}
                     />
                 </div>
 
