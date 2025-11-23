@@ -4,6 +4,61 @@ import DateRangePicker from './DateRangePicker';
 const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showFilters, setShowFilters, hasData }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
 
+    // Function to detect which preset matches the current date range
+    const getMatchingPreset = () => {
+        if (!startDate || !endDate) return null;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const presets = [
+            {
+                key: 'yesterday',
+                label: 'เมื่อวาน',
+                start: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000),
+                end: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+            },
+            {
+                key: 'last7days',
+                label: '7 วันล่าสุด',
+                start: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000),
+                end: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+            },
+            {
+                key: 'last30days',
+                label: '30 วันล่าสุด',
+                start: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000),
+                end: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+            },
+            {
+                key: 'thisMonth',
+                label: 'เดือนนี้',
+                start: new Date(today.getFullYear(), today.getMonth(), 1),
+                end: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+            },
+            {
+                key: 'lastMonth',
+                label: 'เดือนที่แล้ว',
+                start: new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                end: new Date(today.getFullYear(), today.getMonth(), 0)
+            }
+        ];
+
+        for (const preset of presets) {
+            const presetStartStr = preset.start.toISOString().split('T')[0];
+            const presetEndStr = preset.end.toISOString().split('T')[0];
+
+            if (startDate === presetStartStr && endDate === presetEndStr) {
+                return preset;
+            }
+        }
+
+        return null;
+    };
+
+    const matchingPreset = getMatchingPreset();
+    const selectedPresetKey = matchingPreset ? matchingPreset.key : '';
+
     const handlePresetChange = (preset) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -71,9 +126,14 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
                     <div>
                         <h2 className="text-lg font-semibold text-white">Date Range</h2>
                         {!isExpanded && (
-                            <p className="text-sm text-orange-300 font-medium">
-                                {formatDate(startDate)} - {formatDate(endDate)}
-                            </p>
+                            <div className="flex flex-col gap-0.5">
+                                <p className="text-sm text-orange-300 font-medium">
+                                    {matchingPreset ? matchingPreset.label : 'วันที่กำหนดเอง'}
+                                </p>
+                                <p className="text-xs text-slate-400">
+                                    {formatDate(startDate)} - {formatDate(endDate)}
+                                </p>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -105,6 +165,7 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
                     <label className="block text-xs font-medium text-slate-300 mb-2 uppercase tracking-wider">Quick Select</label>
                     <div className="relative">
                         <select
+                            value={selectedPresetKey}
                             onChange={(e) => handlePresetChange(e.target.value)}
                             className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all appearance-none cursor-pointer"
                         >
