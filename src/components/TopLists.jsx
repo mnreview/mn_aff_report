@@ -63,24 +63,42 @@ const TopLists = ({ data }) => {
         const stats = new Map();
 
         data.forEach(conversion => {
-            const subId = conversion.utmContent || 'No SubID';
-            if (!stats.has(subId)) {
-                stats.set(subId, {
-                    subId,
-                    commission: 0,
-                    orders: 0,
-                    items: 0
-                });
-            }
+            const rawSubId = conversion.utmContent || 'No SubID';
+            // Split by '-' and filter empty strings
+            const subIds = rawSubId.split('-').filter(s => s.trim());
 
-            const entry = stats.get(subId);
+            // If no subids after split (e.g. empty string), default to 'No SubID'
+            if (subIds.length === 0) subIds.push('No SubID');
+
+            // Calculate totals for this conversion
+            let conversionCommission = 0;
+            let conversionOrders = 0;
+            let conversionItems = 0;
 
             conversion.orders?.forEach(order => {
-                entry.orders += 1;
+                conversionOrders += 1;
                 order.items?.forEach(item => {
-                    entry.commission += item.itemTotalCommission || 0;
-                    entry.items += item.qty || 0;
+                    conversionCommission += item.itemTotalCommission || 0;
+                    conversionItems += item.qty || 0;
                 });
+            });
+
+            // Attribute to each subId
+            subIds.forEach(subId => {
+                const trimmedSubId = subId.trim();
+                if (!stats.has(trimmedSubId)) {
+                    stats.set(trimmedSubId, {
+                        subId: trimmedSubId,
+                        commission: 0,
+                        orders: 0,
+                        items: 0
+                    });
+                }
+
+                const entry = stats.get(trimmedSubId);
+                entry.commission += conversionCommission;
+                entry.orders += conversionOrders;
+                entry.items += conversionItems;
             });
         });
 
