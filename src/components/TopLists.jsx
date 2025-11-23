@@ -211,7 +211,7 @@ const TopLists = ({ data, appId, secret, userId }) => {
                                 })),
                                 'top_products_revenue'
                             )}
-                            className="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-emerald-500/20"
+                            className="hidden md:flex px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors items-center gap-2 text-sm border border-emerald-500/20"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -222,38 +222,38 @@ const TopLists = ({ data, appId, secret, userId }) => {
                 </div>
                 <div className="p-4 space-y-3">
                     {topByCommission.map((item, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border border-white/5">
-                            <div className="flex-shrink-0 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-emerald-400 font-bold text-sm border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                        <div key={index} className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border-0 md:border md:border-white/5">
+                            <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 bg-slate-800 rounded-full flex items-center justify-center text-emerald-400 font-bold text-xs md:text-sm border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                                 {index + 1}
                             </div>
                             {item.imageUrl && (
                                 <img
                                     src={item.imageUrl}
                                     alt=""
-                                    className="w-12 h-12 rounded-lg object-cover border border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
+                                    className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover border-0 md:border md:border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
                                     onClick={() => handleProductClick(item, ["toppro", "porto", "mng", "report"])}
                                 />
                             )}
                             <div className="flex-1 min-w-0">
                                 <p
-                                    className="font-medium text-slate-200 truncate text-sm cursor-pointer hover:text-emerald-400 transition-colors"
+                                    className="font-medium text-slate-200 truncate text-xs md:text-sm cursor-pointer hover:text-emerald-400 transition-colors"
                                     title={item.itemName}
                                     onClick={() => handleProductClick(item, ["toppro", "porto", "mng", "report"])}
                                 >
                                     {item.itemName}
                                 </p>
-                                <p className="text-xs text-slate-400">{item.shopName}</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded border border-blue-500/20">
+                                <p className="text-xs text-slate-400 hidden md:block">{item.shopName}</p>
+                                <div className="flex items-center gap-1.5 md:gap-2 mt-0.5 md:mt-1">
+                                    <span className="text-[9px] md:text-[10px] bg-blue-500/20 text-blue-300 px-1 md:px-1.5 py-0.5 rounded border-0 md:border md:border-blue-500/20">
                                         {item.channelType}
                                     </span>
-                                    <span className="text-[10px] text-slate-400">
+                                    <span className="text-[9px] md:text-[10px] text-slate-400">
                                         {item.price} × {item.qty}
                                     </span>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-lg font-bold text-emerald-400">{Number(item.commission || 0).toFixed(2)}</p>
+                                <p className="text-base md:text-lg font-bold text-emerald-400">{Number(item.commission || 0).toFixed(2)}</p>
                             </div>
                         </div>
                     ))}
@@ -287,7 +287,7 @@ const TopLists = ({ data, appId, secret, userId }) => {
                                 })),
                                 'top_items_sold'
                             )}
-                            className="px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-orange-500/20"
+                            className="hidden md:flex px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg transition-colors items-center gap-2 text-sm border border-orange-500/20"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -298,39 +298,39 @@ const TopLists = ({ data, appId, secret, userId }) => {
                 </div>
                 <div className="p-4 space-y-3">
                     {topByQuantity.map((item, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border border-white/5">
-                            <div className="flex-shrink-0 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-orange-400 font-bold text-sm border border-orange-500/20 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
+                        <div key={index} className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-slate-800/40 rounded-xl hover:bg-slate-700/40 transition-colors border-0 md:border md:border-white/5">
+                            <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 bg-slate-800 rounded-full flex items-center justify-center text-orange-400 font-bold text-xs md:text-sm border border-orange-500/20 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
                                 {index + 1}
                             </div>
                             {item.imageUrl && (
                                 <img
                                     src={item.imageUrl}
                                     alt=""
-                                    className="w-12 h-12 rounded-lg object-cover border border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
+                                    className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover border-0 md:border md:border-white/10 cursor-pointer hover:opacity-80 transition-opacity"
                                     onClick={() => handleProductClick(item, ["topitem", "porto", "mng", "report"])}
                                 />
                             )}
                             <div className="flex-1 min-w-0">
                                 <p
-                                    className="font-medium text-slate-200 truncate text-sm cursor-pointer hover:text-orange-400 transition-colors"
+                                    className="font-medium text-slate-200 truncate text-xs md:text-sm cursor-pointer hover:text-orange-400 transition-colors"
                                     title={item.itemName}
                                     onClick={() => handleProductClick(item, ["topitem", "porto", "mng", "report"])}
                                 >
                                     {item.itemName}
                                 </p>
-                                <p className="text-xs text-slate-400">{item.shopName}</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded border border-blue-500/20">
+                                <p className="text-xs text-slate-400 hidden md:block">{item.shopName}</p>
+                                <div className="flex items-center gap-1.5 md:gap-2 mt-0.5 md:mt-1">
+                                    <span className="text-[9px] md:text-[10px] bg-blue-500/20 text-blue-300 px-1 md:px-1.5 py-0.5 rounded border-0 md:border md:border-blue-500/20">
                                         {item.channelType}
                                     </span>
-                                    <span className="text-[10px] text-emerald-400 font-medium">
+                                    <span className="text-[9px] md:text-[10px] text-emerald-400 font-medium">
                                         {Number(item.commission || 0).toFixed(2)}
                                     </span>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-lg font-bold text-orange-400">{item.qty}</p>
-                                <p className="text-[10px] text-slate-400">ชิ้น</p>
+                                <p className="text-base md:text-lg font-bold text-orange-400">{item.qty}</p>
+                                <p className="text-[9px] md:text-[10px] text-slate-400">ชิ้น</p>
                             </div>
                         </div>
                     ))}
@@ -363,7 +363,7 @@ const TopLists = ({ data, appId, secret, userId }) => {
                                 })),
                                 'top_revenue_by_subid'
                             )}
-                            className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-blue-500/20"
+                            className="hidden md:flex px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors items-center gap-2 text-sm border border-blue-500/20"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -417,7 +417,7 @@ const TopLists = ({ data, appId, secret, userId }) => {
                                 })),
                                 'top_orders_by_subid'
                             )}
-                            className="px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg transition-colors flex items-center gap-2 text-sm border border-purple-500/20"
+                            className="hidden md:flex px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg transition-colors items-center gap-2 text-sm border border-purple-500/20"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
