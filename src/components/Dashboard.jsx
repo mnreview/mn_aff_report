@@ -241,6 +241,9 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
                         <Link to="/report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
                             Detailed Report
                         </Link>
+                        <Link to="/click-report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
+                            Click Report
+                        </Link>
                         <Link to="/settings" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
                             Settings
                         </Link>

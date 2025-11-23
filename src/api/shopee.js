@@ -76,6 +76,58 @@ export const fetchConversionReport = async (appId, secret, params) => {
   }
 };
 
+export const fetchClickReport = async (appId, secret, params) => {
+  // GraphQL query for Click Report
+  // Parameters: clickTimeStart, clickTimeEnd, subId, limit, scrollId
+  const query = `
+    {
+      clickReport(
+        clickTimeStart: ${params.clickTimeStart},
+        clickTimeEnd: ${params.clickTimeEnd},
+        ${params.subId ? `subId: "${params.subId}",` : ''}
+        limit: ${params.limit || 500},
+        scrollId: "${params.scrollId || ''}"
+      ) {
+        nodes {
+          clickTime
+          subId
+          utmSource
+          utmMedium
+          utmCampaign
+          utmContent
+          utmTerm
+          device
+          referrer
+          clickCount
+          shortLink
+          originUrl
+        }
+        pageInfo {
+          hasNextPage
+          scrollId
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await axios.post(PROXY_URL, {
+      appId,
+      secret,
+      query
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching click report:", error);
+    throw error;
+  }
+};
+
 export const generateShortLink = async (appId, secret, originUrl, subIds = []) => {
   const query = `
     mutation {
