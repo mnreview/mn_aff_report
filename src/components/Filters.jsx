@@ -4,6 +4,14 @@ import DateRangePicker from './DateRangePicker';
 const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showFilters, setShowFilters, hasData }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
 
+    // Helper function to format date in local timezone (Bangkok UTC+7)
+    const formatDateLocal = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     // Function to detect which preset matches the current date range
     const getMatchingPreset = () => {
         if (!startDate || !endDate) return null;
@@ -45,8 +53,8 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
         ];
 
         for (const preset of presets) {
-            const presetStartStr = preset.start.toISOString().split('T')[0];
-            const presetEndStr = preset.end.toISOString().split('T')[0];
+            const presetStartStr = formatDateLocal(preset.start);
+            const presetEndStr = formatDateLocal(preset.end);
 
             if (startDate === presetStartStr && endDate === presetEndStr) {
                 return preset;
@@ -97,8 +105,8 @@ const Filters = ({ startDate, setStartDate, endDate, setEndDate, onSearch, showF
                 return;
         }
 
-        const startStr = start.toISOString().split('T')[0];
-        const endStr = end.toISOString().split('T')[0];
+        const startStr = formatDateLocal(start);
+        const endStr = formatDateLocal(end);
 
         setStartDate(startStr);
         setEndDate(endStr);
