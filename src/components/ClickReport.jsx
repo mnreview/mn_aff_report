@@ -23,8 +23,17 @@ const ClickReport = ({ appId, secret, userId }) => {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    setStartDate(yesterday.toISOString().split('T')[0]);
-    setEndDate(yesterday.toISOString().split('T')[0]);
+    // Format date in local timezone (Bangkok UTC+7)
+    const formatDateLocal = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const yesterdayStr = formatDateLocal(yesterday);
+    setStartDate(yesterdayStr);
+    setEndDate(yesterdayStr);
   }, []);
 
   const handleFetchData = async () => {

@@ -25,12 +25,20 @@ const TopLists = ({ data, appId, secret, userId }) => {
             )
         ].join('\n');
 
+        // Format date in local timezone (Bangkok UTC+7)
+        const formatDateLocal = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
         // Create blob and download
         const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
-        link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute('download', `${filename}_${formatDateLocal(new Date())}.csv`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
