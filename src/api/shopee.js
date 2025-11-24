@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { retryAxiosRequest } from '../utils/retry';
 
 const PROXY_URL = '/api/conversion-report';
 
@@ -64,11 +65,18 @@ export const fetchConversionReport = async (appId, secret, params) => {
   `;
 
   try {
-    const response = await axios.post(PROXY_URL, {
-      appId,
-      secret,
-      query
-    });
+    const response = await retryAxiosRequest(
+      () => axios.post(PROXY_URL, {
+        appId,
+        secret,
+        query
+      }),
+      {
+        onRetry: (attempt, delay) => {
+          console.log(`🔄 Retrying conversion report request (attempt ${attempt})...`);
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -111,11 +119,18 @@ export const fetchClickReport = async (appId, secret, params) => {
   `;
 
   try {
-    const response = await axios.post(PROXY_URL, {
-      appId,
-      secret,
-      query
-    });
+    const response = await retryAxiosRequest(
+      () => axios.post(PROXY_URL, {
+        appId,
+        secret,
+        query
+      }),
+      {
+        onRetry: (attempt, delay) => {
+          console.log(`🔄 Retrying click report request (attempt ${attempt})...`);
+        }
+      }
+    );
 
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
@@ -141,11 +156,18 @@ export const generateShortLink = async (appId, secret, originUrl, subIds = []) =
   `;
 
   try {
-    const response = await axios.post(PROXY_URL, {
-      appId,
-      secret,
-      query
-    });
+    const response = await retryAxiosRequest(
+      () => axios.post(PROXY_URL, {
+        appId,
+        secret,
+        query
+      }),
+      {
+        onRetry: (attempt, delay) => {
+          console.log(`🔄 Retrying short link generation (attempt ${attempt})...`);
+        }
+      }
+    );
 
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
