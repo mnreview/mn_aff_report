@@ -19,6 +19,7 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
     const [showFilters, setShowFilters] = useState(false);
     const [usingCache, setUsingCache] = useState(false);
     const [rateLimitStatus, setRateLimitStatus] = useState(getRateLimitStatus());
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const hasLoadedInitialData = useRef(false);
 
@@ -232,44 +233,104 @@ const Dashboard = ({ data, setData, appId, setAppId, secret, setSecret, userId }
         <div className="min-h-screen bg-transparent pb-12">
             {/* Navbar / Header */}
             <div className="glass-panel sticky top-0 z-50 border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl shadow-lg shadow-orange-500/20">
-                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                            </svg>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="flex justify-between items-center">
+                        {/* Logo */}
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl shadow-lg shadow-orange-500/20">
+                                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                                    Shopee <span className="text-gradient-gold">Affiliate</span>
+                                </h1>
+                                <p className="text-slate-400 text-xs font-medium hidden sm:block">Dashboard & Analytics</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-2xl font-bold text-white tracking-tight">
-                                Shopee <span className="text-gradient-gold">Affiliate</span>
-                            </h1>
-                            <p className="text-slate-400 text-xs font-medium">Dashboard & Analytics</p>
+
+                        {/* Desktop Menu */}
+                        <div className="hidden md:flex items-center gap-4">
+                            <Link to="/report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+                                Detailed Report
+                            </Link>
+                            <Link to="/settings" className="text-slate-400 hover:text-white text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+                                Settings
+                            </Link>
+                            <button
+                                onClick={handleClearCache}
+                                className="text-slate-400 hover:text-orange-400 text-sm font-medium transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-white/5"
+                                title="Clear all cached data"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Clear Cache
+                            </button>
+                            <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+                                Sign Out
+                            </button>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Link to="/report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
-                            Detailed Report
-                        </Link>
-                        <Link to="/click-report" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
-                            Click Report
-                        </Link>
-                        <Link to="/settings" className="text-slate-400 hover:text-white text-sm font-medium transition-colors">
-                            Settings
-                        </Link>
+
+                        {/* Mobile Menu Button */}
                         <button
-                            onClick={handleClearCache}
-                            className="text-slate-400 hover:text-orange-400 text-sm font-medium transition-colors flex items-center gap-1"
-                            title="Clear all cached data"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="md:hidden p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                            aria-label="Toggle menu"
                         >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Clear Cache
-                        </button>
-                        <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 text-sm font-medium transition-colors">
-                            Sign Out
+                            {mobileMenuOpen ? (
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            ) : (
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            )}
                         </button>
                     </div>
+
+                    {/* Mobile Menu */}
+                    {mobileMenuOpen && (
+                        <div className="md:hidden mt-4 pt-4 border-t border-white/5 space-y-2 animate-fade-in">
+                            <Link
+                                to="/report"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block text-slate-400 hover:text-white text-base font-medium transition-colors px-4 py-3 rounded-lg hover:bg-white/5"
+                            >
+                                Detailed Report
+                            </Link>
+                            <Link
+                                to="/settings"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block text-slate-400 hover:text-white text-base font-medium transition-colors px-4 py-3 rounded-lg hover:bg-white/5"
+                            >
+                                Settings
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    handleClearCache();
+                                    setMobileMenuOpen(false);
+                                }}
+                                className="w-full text-left text-slate-400 hover:text-orange-400 text-base font-medium transition-colors flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/5"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Clear Cache
+                            </button>
+                            <button
+                                onClick={() => {
+                                    handleLogout();
+                                    setMobileMenuOpen(false);
+                                }}
+                                className="w-full text-left text-slate-400 hover:text-red-400 text-base font-medium transition-colors px-4 py-3 rounded-lg hover:bg-white/5"
+                            >
+                                Sign Out
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
